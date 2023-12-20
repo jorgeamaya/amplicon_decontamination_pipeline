@@ -76,7 +76,6 @@ workflow mixed_reads_ampseq {
 	}
 
 	output {
-		File rawfilelist_f = ampseq_dada2_iseq_process.rawfilelist
 		File missing_files_f = ampseq_dada2_iseq_process.missing_files
 		File ASVBimeras_f = ampseq_dada2_iseq_process.ASVBimeras
 		File CIGARVariants_Bfilter_f = ampseq_dada2_iseq_process.CIGARVariants_Bfilter
@@ -173,7 +172,6 @@ task mixed_reads_ampseq_process {
 	find . -type f
 	>>>
 	output {
-		File rawfilelist = "Results/Fq_metadata/rawfilelist.tsv"
 		File ASVBimeras = "Results/ASVBimeras.txt"
 		File CIGARVariants_Bfilter = "Results/CIGARVariants_Bfilter.out.tsv"
 		File ASV_to_CIGAR = "Results/ASV_to_CIGAR/ASV_to_CIGAR.out.txt"
