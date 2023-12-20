@@ -58,6 +58,8 @@ parser$add_argument("-mM", "--maxMismatch", type="integer", help="Specify the ma
 parser$add_argument("--bimera", action='store_true', help="Optionally output list of sequences identified as bimeras")
 args <- parser$parse_args()
 
+print("Entered DADA2")
+
 #work_dir = '/Users/jorgeamaya/Desktop/amplicon_decontamination_pipeline/Results/DADA2_OP'
 #path_to_meta = '/Users/jorgeamaya/Desktop/amplicon_decontamination_pipeline/Results/PrimerRem/mixed_op_prim_meta.tsv'
 #output_filename = '/Users/jorgeamaya/Desktop/amplicon_decontamination_pipeline/Results/DADA2_OP/seqtab.tsv'
