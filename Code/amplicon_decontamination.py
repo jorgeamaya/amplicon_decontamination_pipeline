@@ -184,7 +184,7 @@ def run_dada2(path_to_DADA2, path_to_meta, path_to_fq, path_to_flist, Class, max
 			program = 'runDADA2contamination.R' 
 
 		bimera = '--bimera'
-		cmd = ['Rscript', os.path.join(path_to_DADA2, program),
+		cmd = ['Rscript', os.path.join("/", path_to_DADA2, program),
 		'-p', f'{path_to_meta}',
 		'-r', f'{path_to_fq}',
 		'-l', f'{path_to_flist}',
