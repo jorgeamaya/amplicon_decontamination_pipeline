@@ -203,6 +203,7 @@ def run_dada2(path_to_DADA2, path_to_meta, path_to_fq, path_to_flist, Class, max
 		'-s', f'{saveRdata}',
 		f'{bimera}']
 		print(cmd)
+		print("Check")
 		proc = subprocess.Popen(cmd)
 		proc.wait()
 	else:
