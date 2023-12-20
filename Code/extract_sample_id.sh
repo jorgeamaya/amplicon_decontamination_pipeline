@@ -14,7 +14,7 @@ if [ $# -eq 1 ]; then
     # Ensure the directory exists
     if [ -d "$directory" ]; then
         # Process each file in the directory
-        for file_path in "$directory"/*.fastq.gz; do
+        for file_path in "$directory"/*_L001_R1_001.fastq.gz; do
             # Extract the file name from the path
             file_name=$(basename "$file_path")
             

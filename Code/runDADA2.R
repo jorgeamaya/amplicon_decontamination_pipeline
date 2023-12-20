@@ -510,6 +510,7 @@ seqtab$Sample_ID <- row.names(seqtab)
 row.names(seqtab) = NULL
 col_names <- names(seqtab)
 seqtab <- seqtab[, c(length(col_names), 1:(length(col_names)-1))]
+seqtab[is.na(seqtab)] = 0
 
 #Generate output: sequence table to a tsv
 write.table(seqtab, file=output_filename, quote = FALSE, sep = "\t", row.names = FALSE)
