@@ -76,7 +76,6 @@ workflow mixed_reads_ampseq {
 	}
 
 	output {
-		File missing_files_f = mixed_reads_ampseq_process.missing_files
 		File ASVBimeras_f = mixed_reads_ampseq_process.ASVBimeras
 		File CIGARVariants_Bfilter_f = mixed_reads_ampseq_process.CIGARVariants_Bfilter
 		File ASV_to_CIGAR_f = mixed_reads_ampseq_process.ASV_to_CIGAR
