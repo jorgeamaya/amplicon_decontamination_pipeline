@@ -76,13 +76,13 @@ workflow mixed_reads_ampseq {
 	}
 
 	output {
-		File missing_files_f = ampseq_dada2_iseq_process.missing_files
-		File ASVBimeras_f = ampseq_dada2_iseq_process.ASVBimeras
-		File CIGARVariants_Bfilter_f = ampseq_dada2_iseq_process.CIGARVariants_Bfilter
-		File ASV_to_CIGAR_f = ampseq_dada2_iseq_process.ASV_to_CIGAR
-		File seqtab_f = ampseq_dada2_iseq_process.seqtab
-		File ASVTable_f = ampseq_dada2_iseq_process.ASVTable
-		File ASVSeqs_f = ampseq_dada2_iseq_process.ASVSeqs
+		File missing_files_f = mixed_reads_ampseq_process.missing_files
+		File ASVBimeras_f = mixed_reads_ampseq_process.ASVBimeras
+		File CIGARVariants_Bfilter_f = mixed_reads_ampseq_process.CIGARVariants_Bfilter
+		File ASV_to_CIGAR_f = mixed_reads_ampseq_process.ASV_to_CIGAR
+		File seqtab_f = mixed_reads_ampseq_process.seqtab
+		File ASVTable_f = mixed_reads_ampseq_process.ASVTable
+		File ASVSeqs_f = mixed_reads_ampseq_process.ASVSeqs
 	}
 }
 
@@ -175,7 +175,7 @@ task mixed_reads_ampseq_process {
 		File ASVBimeras = "Results/ASVBimeras.txt"
 		File CIGARVariants_Bfilter = "Results/CIGARVariants_Bfilter.out.tsv"
 		File ASV_to_CIGAR = "Results/ASV_to_CIGAR/ASV_to_CIGAR.out.txt"
-		File seqtab = "Results/seqtab_mixed.tsv"
+		File seqtab = "Results/seqtab.tsv"
 		File ASVTable = "Results/PostProc_DADA2/ASVTable.txt"
 		File ASVSeqs = "Results/PostProc_DADA2/ASVSeqs.fasta"
 	}
