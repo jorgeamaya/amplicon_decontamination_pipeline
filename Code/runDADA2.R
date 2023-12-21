@@ -4,6 +4,8 @@
 # LOAD LIBRARIES AND PREPARE VARIABLES #
 ########################################
 
+R.version()
+
 if (!require("dada2")) {
   install.packages("dada2", repos="http://cran.rstudio.com/")
   library("dada2")

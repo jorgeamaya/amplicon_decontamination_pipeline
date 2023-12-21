@@ -5,7 +5,6 @@ RUN conda config \
     --add channels bioconda \
     --add channels conda-forge
 
-#RUN conda install -y python=3.10.0
 RUN conda install -y pandas
 RUN conda install -y biopython
 RUN conda install -y bbmap
