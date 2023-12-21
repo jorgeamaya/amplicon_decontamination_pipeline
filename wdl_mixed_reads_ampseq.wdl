@@ -169,7 +169,7 @@ task mixed_reads_ampseq_process {
 	gsutil -m cp -r ~{path_to_fq}* fq_dir/
 	find . -type f
 	Rscript --version
-	Rscript Code/runDADA2.R
+	Rscript /Code/runDADA2.R
 	python /Code/Amplicon_TerraPipeline.py --config ~{config_json} --mixed_reads --meta --repo --adaptor_removal --primer_removal --dada2 #--postproc_dada2 --asv_to_cigar
 	find . -type f
 	>>>
