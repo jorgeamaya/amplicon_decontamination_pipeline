@@ -174,7 +174,6 @@ task mixed_reads_ampseq_process {
 	find . -type f
 	python /Code/Amplicon_TerraPipeline.py --config ~{config_json} --mixed_reads --meta --repo --adaptor_removal --primer_removal --dada2 --postproc_dada2 --asv_to_cigar
 	find . -type f
-	#REPLACE PATH TO DADA2 with PATH TO CODE
 	>>>
 	output {
 		File ASVBimeras = "Results/ASVBimeras.txt"
