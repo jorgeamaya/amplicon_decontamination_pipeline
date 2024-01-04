@@ -3,7 +3,7 @@
 ########################################
 # LOAD LIBRARIES AND PREPARE VARIABLES #
 ########################################
-
+print("Entering adjustASV")
 if (!require("seqinr")) {
   install.packages("seqinr", repos="http://cran.rstudio.com/")
   library("seqinr")
@@ -20,14 +20,14 @@ if (!require("Biostrings")) {
   install.packages("Biostrings", repos="http://cran.rstudio.com/")
   library("Biostrings")
 }
-if (!require("parallel")) {
-  install.packages("parallel", repos="http://cran.rstudio.com/")
-  library("parallel")
-}
-if (!require("doMC")) {
-  install.packages("doMC", repos="http://cran.rstudio.com/")
-  library("doMC")
-}
+#if (!require("parallel")) {
+#  install.packages("parallel", repos="http://cran.rstudio.com/")
+#  library("parallel")
+#}
+#if (!require("doMC")) {
+#  install.packages("doMC", repos="http://cran.rstudio.com/")
+#  library("doMC")
+#}
 
 # absolute = function(correctedASV, tar) {
 #   return(nchar(correctedASV) != nchar(tar))
@@ -47,7 +47,7 @@ if (!require("doMC")) {
 #                       paste0(ref_three_prime, ref_five_prime)),
 #                     method="levenshtein")) > 9)
 # }
-
+print("Pre parse arguments")
 parser <- ArgumentParser()
 parser$add_argument("-s", "--seqtab", 
                     help="Path to input")
@@ -62,12 +62,13 @@ parser$add_argument("-dist", "--distance",
 parser$add_argument("-o", "--output",
                     help="Path to output for corrected ASV list")
 
+print("Post parse arguments")
 args <- parser$parse_args()
 path_to_refseq <- args$reference
 seqfile <- args$seqtab
 output <- args$output
 dist = args$dist
-
+print("Arguments in variable")
 #seqfile = '/Users/jorgeamaya/Desktop/amplicon_decontamination_pipeline/Results/DADA2_NOP/seqtab.tsv'
 #path_to_refseq = '/Users/jorgeamaya/Desktop/amplicon_decontamination_pipeline/Data/pf3d7_ref_updated_v4.fasta'
 #dist = 'absolute'
@@ -158,3 +159,5 @@ col_names <- names(seqtab)
 seqtab <- seqtab[, c(length(col_names), 1:(length(col_names)-1))]
 
 write.table(seqtab, file = seqfile_corrected, quote = FALSE, sep = "\t", row.names = FALSE)
+
+print("Leaving Adjust ASV")

@@ -4,6 +4,7 @@
 # LOAD LIBRARIES AND PREPARE VARIABLES #
 ########################################
 
+print("Entering PostProc")
 if (!require("argparse")) {
   install.packages("argparse", repos="http://cran.rstudio.com/")
   library("argparse")
@@ -24,15 +25,16 @@ if (!require("seqinr")) {
   install.packages("seqinr", repos="http://cran.rstudio.com/")
   library("seqinr")
 }
-if (!require("parallel")) {
-  install.packages("parallel", repos="http://cran.rstudio.com/")
-  library("parallel")
-}
+#if (!require("parallel")) {
+#  install.packages("parallel", repos="http://cran.rstudio.com/")
+#  library("parallel")
+#}
 if (!require("Biostrings")) {
   install.packages("Biostrings", repos="http://cran.rstudio.com/")
   library("Biostrings")
 }
 
+print("Loaded libraries")
 # Pairwise Alignment
 seq_align <- function(seqs_df, path_to_ref) {
   align_df <- data.frame()
@@ -68,6 +70,7 @@ seq_align <- function(seqs_df, path_to_ref) {
   return(align_df)
 }
 
+print("Loaded functions")
 parser <- ArgumentParser()
 #Minimum arguments
 parser$add_argument("-s", "--seqtab", help="Path to input")
@@ -257,3 +260,5 @@ write.table(asvdf, file = output, sep = "\t", quote = FALSE, row.names = FALSE)
 if (fasta) {
   write.fasta(sapply(seqs, s2c), names = hapid, file.out = paste0(dirname(output),"/ASVSeqs.fasta"), nbchar = 600)
 }
+
+print("Leaving PostProc")

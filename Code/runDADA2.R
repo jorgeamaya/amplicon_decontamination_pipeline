@@ -4,6 +4,8 @@
 # LOAD LIBRARIES AND PREPARE VARIABLES #
 ########################################
 
+print("Entering DADA2")
+
 if (!require("dada2")) {
   install.packages("dada2", repos="http://cran.rstudio.com/")
   library("dada2")
@@ -24,7 +26,7 @@ if (!require("argparse")) {
   library("argparse")
 }
 
-if (!require("viridis")) {
+if (!require("viridisLite")) {
   install.packages("viridis", repos="http://cran.rstudio.com/")
   library("viridis")
 }
@@ -57,8 +59,6 @@ parser$add_argument("-jC", "--justConcatenate", type="integer", help="Specify wh
 parser$add_argument("-mM", "--maxMismatch", type="integer", help="Specify the maximum number of mismatches allowed during merging")
 parser$add_argument("--bimera", action='store_true', help="Optionally output list of sequences identified as bimeras")
 args <- parser$parse_args()
-
-print("Entered DADA2")
 
 #work_dir = '/Users/jorgeamaya/Desktop/amplicon_decontamination_pipeline/Results/DADA2_OP'
 #path_to_meta = '/Users/jorgeamaya/Desktop/amplicon_decontamination_pipeline/Results/PrimerRem/mixed_op_prim_meta.tsv'
@@ -274,9 +274,9 @@ out <- out[(out[,2] != 0),]
 
 #Compute the error model
 print("starting error model learning for forward reads...")
-errF <- learnErrors(filtFs, multithread=TRUE, verbose=2, randomize=randomize, MAX_CONSIST=max_consist)
+errF <- learnErrors(filtFs, multithread=FALSE, verbose=2, randomize=randomize, MAX_CONSIST=max_consist)
 print("starting error model learning for reverse reads...")
-errR <- learnErrors(filtRs, multithread=TRUE, verbose=2, randomize=randomize, MAX_CONSIST=max_consist)
+errR <- learnErrors(filtRs, multithread=FALSE, verbose=2, randomize=randomize, MAX_CONSIST=max_consist)
 
 #Plot the Errors
 pdf(paste0(work_dir,"/errF.pdf"))
@@ -524,3 +524,4 @@ if (is.null(save_run)||save_run == '') {
     save.image(paste0(work_dir,"/",save_run))
 }
 
+print("Leaving DADA2")
