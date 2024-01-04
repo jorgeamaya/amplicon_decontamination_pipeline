@@ -40,7 +40,10 @@ seq_align <- function(seqs_df, path_to_ref) {
   align_df <- data.frame()
   # LOAD REFERENCE
   if (file.exists(path_to_ref)) {
+    print("Enter critical point")
+    print(path_to_ref)
     ref <- read.fasta(path_to_ref)
+    print("Passed critical point")
     ref_str <- toupper(sapply(ref, c2s))
   } else {
     stop(paste("File", path_to_ref, "not found!"))

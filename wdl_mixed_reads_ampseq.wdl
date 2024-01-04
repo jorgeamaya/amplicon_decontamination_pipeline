@@ -19,7 +19,7 @@ workflow mixed_reads_ampseq {
 		String saveRdata = ""
 		Int justConcatenate = 0
 		Int maxMismatch = 0
-		String path_to_DADA2 = '/Code'
+		String path_to_Code = '/Code'
 		File overlap_pr1
 		File overlap_pr2
 		File path_to_snv
@@ -36,6 +36,7 @@ workflow mixed_reads_ampseq {
 		String max_indel_dist = "-1"
 		String include_failed = "False"
 		String exclude_bimeras = "False"
+		String amp_mask = "None"
 	}
 	call mixed_reads_ampseq_process {
 		input:
@@ -56,7 +57,7 @@ workflow mixed_reads_ampseq {
 			saveRdata = saveRdata,
 			justConcatenate = justConcatenate,
 			maxMismatch = maxMismatch,
-			path_to_DADA2 = path_to_DADA2,
+			path_to_Code = path_to_Code,
 			overlap_pr1 = overlap_pr1,
 			overlap_pr2 = overlap_pr2,
 			path_to_snv = path_to_snv,
@@ -73,6 +74,7 @@ workflow mixed_reads_ampseq {
 			max_indel_dist = max_indel_dist,
 			include_failed = include_failed,
 			exclude_bimeras = exclude_bimeras
+			amp_mask = amp_mask
 	}
 
 	output {
@@ -104,7 +106,7 @@ task mixed_reads_ampseq_process {
 		String saveRdata = ""
 		Int justConcatenate = 0
 		Int maxMismatch = 0
-		String path_to_DADA2 = '/Code'
+		String path_to_Code = '/Code'
 		File overlap_pr1
 		File overlap_pr2
 		File path_to_snv
@@ -121,6 +123,7 @@ task mixed_reads_ampseq_process {
 		String max_indel_dist = "-1"
 		String include_failed = "False"
 		String exclude_bimeras = "False"
+		String amp_mask = "None"
 	}
 
 	Map[String, String] in_map = {
@@ -141,7 +144,7 @@ task mixed_reads_ampseq_process {
 		"saveRdata": saveRdata,
 		"justConcatenate": justConcatenate,
 		"maxMismatch": maxMismatch,
-		"path_to_DADA2": path_to_DADA2,
+		"path_to_Code": path_to_Code,
 		"overlap_pr1" : sub(overlap_pr1, "gs://", "/cromwell_root/"),
 		"overlap_pr2" : sub(overlap_pr2, "gs://", "/cromwell_root/"),
 		"path_to_snv": sub(path_to_snv, "gs://", "/cromwell_root/"),
@@ -158,6 +161,7 @@ task mixed_reads_ampseq_process {
 		"max_indel_dist": max_indel_dist,
 		"include_failed": include_failed,
 		"exclude_bimeras": exclude_bimeras
+		"amp_mask": amp_mask
 	}
 	File config_json = write_json(in_map)
 	command <<<
@@ -170,6 +174,7 @@ task mixed_reads_ampseq_process {
 	find . -type f
 	python /Code/Amplicon_TerraPipeline.py --config ~{config_json} --mixed_reads --meta --repo --adaptor_removal --primer_removal --dada2 --postproc_dada2 --asv_to_cigar
 	find . -type f
+	#REPLACE PATH TO DADA2 with PATH TO CODE
 	>>>
 	output {
 		File ASVBimeras = "Results/ASVBimeras.txt"

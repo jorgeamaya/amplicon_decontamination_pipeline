@@ -149,12 +149,12 @@ def trim_primer(sampleid, fileF, fileR, res_dir, subdir, pr1, pr2, prefix, keep_
 	return()
 
 #RUN DADA2 SECTION
-def run_dada2(path_to_DADA2, path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch, saveRdata, res_dir, subdir):
+def run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch, saveRdata, res_dir, subdir):
 	"""
 	Runs the DADA2 pipeline on the input files using the specified parameters.
 
 	Args:
-	path_to_DADA2 (str): the path to the DADA2 installation directory.
+	path_to_Code (str): the path to the DADA2 installation directory.
 	path_to_meta (str): the path to the metadata file containing sample information.
 	path_to_fq (str): the path to the raw fastq.gz files.
 	path_to_flist (str): the path to a csv file with the sample_id,Forward,Reverse, where Forward and Reverse are columns with the barcodes for the sample
@@ -184,7 +184,7 @@ def run_dada2(path_to_DADA2, path_to_meta, path_to_fq, path_to_flist, Class, max
 			program = 'runDADA2contamination.R' 
 
 		bimera = '--bimera'
-		cmd = ['Rscript', os.path.join("/", path_to_DADA2, program),
+		cmd = ['Rscript', os.path.join("/", path_to_Code, program),
 		'-p', f'{path_to_meta}',
 		'-r', f'{path_to_fq}',
 		'-l', f'{path_to_flist}',
