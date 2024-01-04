@@ -73,7 +73,7 @@ workflow mixed_reads_ampseq {
 			max_snv_dist = max_snv_dist,
 			max_indel_dist = max_indel_dist,
 			include_failed = include_failed,
-			exclude_bimeras = exclude_bimeras
+			exclude_bimeras = exclude_bimeras,
 			amp_mask = amp_mask
 	}
 
@@ -160,7 +160,7 @@ task mixed_reads_ampseq_process {
 		"max_snv_dist": max_snv_dist,
 		"max_indel_dist": max_indel_dist,
 		"include_failed": include_failed,
-		"exclude_bimeras": exclude_bimeras
+		"exclude_bimeras": exclude_bimeras,
 		"amp_mask": amp_mask
 	}
 	File config_json = write_json(in_map)
