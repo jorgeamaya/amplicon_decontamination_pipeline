@@ -4,25 +4,23 @@
 # LOAD LIBRARIES AND PREPARE VARIABLES #
 ########################################
 
-R.version()
-
 if (!require("dada2")) {
   install.packages("dada2", repos="http://cran.rstudio.com/")
   library("dada2")
 }
 
 if (!require("limma")) {
-  install.packages("dada2", repos="http://cran.rstudio.com/")
+  install.packages("limma", repos="http://cran.rstudio.com/")
   library("limma")
 }
 
 if (!require("data.table")) {
-  install.packages("dada2", repos="http://cran.rstudio.com/")
+  install.packages("data.table", repos="http://cran.rstudio.com/")
   library("data.table")
 }
 
 if (!require("argparse")) {
-  install.packages("dada2", repos="http://cran.rstudio.com/")
+  install.packages("argparse", repos="http://cran.rstudio.com/")
   library("argparse")
 }
 

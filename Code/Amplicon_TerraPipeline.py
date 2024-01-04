@@ -204,7 +204,7 @@ def main():
 	if args.overlap_reads and args.dada2:
 		ad.flush_dir(res_dir, "DADA2", "QProfile")
 		path_to_meta = os.path.join(res_dir, "PrimerRem", "primrem_meta.tsv")
-		ad.run_dada2(path_to_DADA2, path_to_meta, path_to_fq, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch, saveRdata, res_dir, "DADA2")
+		ad.run_dada2(path_to_DADA2, path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch, saveRdata, res_dir, "DADA2")
 		cmd = ['cp', os.path.join(res_dir, 'DADA2', 'seqtab.tsv'), 
 			os.path.join(res_dir, '.'), 
 			'\\', 
