@@ -2,6 +2,7 @@ version 1.0
 
 workflow mixed_reads_ampseq {
 	input {
+		String type_of_reads
 		String path_to_fq 
 		File path_to_flist
 		String pattern_fw = "*_L001_R1_001.fastq.gz"
@@ -40,6 +41,7 @@ workflow mixed_reads_ampseq {
 	}
 	call mixed_reads_ampseq_process {
 		input:
+			type_of_reads = type_of_reads,
 			path_to_fq = path_to_fq,
 			path_to_flist = path_to_flist,
 			pattern_fw = pattern_fw,
@@ -89,6 +91,7 @@ workflow mixed_reads_ampseq {
 
 task mixed_reads_ampseq_process {
 	input {
+		String type_of_reads
 		String path_to_fq 
 		File path_to_flist
 		String pattern_fw = "*_L001_R1_001.fastq.gz"
@@ -164,6 +167,7 @@ task mixed_reads_ampseq_process {
 		"amp_mask": amp_mask
 	}
 	File config_json = write_json(in_map)
+
 	command <<<
 	set -euxo pipefail
 	#set -x
@@ -172,7 +176,7 @@ task mixed_reads_ampseq_process {
 	gsutil ls ~{path_to_fq}
 	gsutil -m cp -r ~{path_to_fq}* fq_dir/
 	find . -type f
-	python /Code/Amplicon_TerraPipeline.py --config ~{config_json} --overlap_reads --meta --repo --adaptor_removal --primer_removal --dada2 --postproc_dada2 --asv_to_cigar
+	python /Code/Amplicon_TerraPipeline.py --config ~{config_json} --~{type_of_reads} --meta --repo --adaptor_removal --primer_removal --dada2 --postproc_dada2 --asv_to_cigar
 	find . -type f
 	>>>
 	output {
