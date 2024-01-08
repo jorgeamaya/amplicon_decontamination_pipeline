@@ -19,6 +19,7 @@ RUN mamba config \
     r-viridisLite=0.4.0 \
     r-argparse=2.0.3 \
     r-seqinr=4.2_5 \
+    r-stringdist=0.9.8 \
     -c conda-forge -c bioconda && \
     mamba clean --all -f -y && \
     echo "source activate ampseq_env" > ~/.bashrc
