@@ -1,14 +1,17 @@
 version 1.0
 
 workflow mixed_reads_ampseq {
-	input {
+	input {	
+		#General commands
 		String type_of_reads
 		String path_to_fq 
 		File path_to_flist
 		String pattern_fw = "*_L001_R1_001.fastq.gz"
 		String pattern_rv = "*_L001_R2_001.fastq.gz"
-		File pr1 
-		File pr2 
+
+		#Commands for AmpSeq
+		File pr1
+		File pr2
 		String Class = "parasite"
 		String maxEE = "5,5"
 		String trimRight = "0,0"
@@ -39,6 +42,7 @@ workflow mixed_reads_ampseq {
 		String exclude_bimeras = "False"
 		String amp_mask = "None"
 	}
+
 	call mixed_reads_ampseq_process {
 		input:
 			type_of_reads = type_of_reads,
@@ -96,7 +100,7 @@ task mixed_reads_ampseq_process {
 		File path_to_flist
 		String pattern_fw = "*_L001_R1_001.fastq.gz"
 		String pattern_rv = "*_L001_R2_001.fastq.gz"
-		File pr1 
+		File pr1
 		File pr2
 		String Class = "parasite"
 		String maxEE = "5,5"
@@ -197,3 +201,4 @@ task mixed_reads_ampseq_process {
 		docker: 'jorgeamaya/mixed_reads_ampseq'
 	}
 }
+
