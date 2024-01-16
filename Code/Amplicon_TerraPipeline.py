@@ -13,7 +13,7 @@ import asv_to_cigar as ac
 def main():
 	"""
 	Implementation of the amplicon decontamination pipeline for use and 
-	distribution in TERRA
+	distribution in TERRA v=1.0
 
 	Usage: python Code/Amplicon_TerraPipeline.py --config config.json ...
 	
