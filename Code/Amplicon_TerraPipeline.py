@@ -28,6 +28,7 @@ def main():
 	parser.add_argument('--config', help="Path to config.json file.", required =True)
 	parser.add_argument('--overlap_reads', action="store_true", help="Specify whether the data contains paired reads that overlap on their targets. For example, MiSeq paired reads of 250bp for 500bp or shorter targets. The pipeline will perform the contamination detection steps with bbmerge or dada2, depending on the choice made be the user.")
 	parser.add_argument('--mixed_reads', action="store_true", help="Specify whether the data contains a mix of reads that overlap and do not overlap on their targets. For example, iSeq paired reads of 150bp for targets that are shorter than 300bp long and targets that are longer than 300bp.")
+	parser.add_argument('--terra', action="store_true", help="Specify whether the pipeline is being run in the Terra platform.")
 	parser.add_argument('--meta', action="store_true", help="Specify if metadata file must be created. This flag runs the pipeline from the beginning.")
 	parser.add_argument('--repo', action="store_true", help="Specify if the reports must be created.")
 	parser.add_argument('--bbmerge', action="store_true", help="Specify if preprocess merge with bbmerge is performed.")
@@ -47,7 +48,14 @@ def main():
 
 	if args.mixed_reads and args.bbmerge and args.bbmerge_report:
 		sys.exit('Merging of non-overlapping reads with bbmerge unsupported. Use the dada2 and dada2_contamination flags instead. Read documentation for limitations of this method.')
-		
+
+	if args.terra:
+		print("Pipeline is running in Terra. Adjusted paths will be used.")
+		print(args.terra)
+	else:
+		print("Pipeline not running in Terra. Default paths will be used.")
+		print(args.terra)
+				
 	#Configuration aguments will be parsed from config.json
 	with open(args.config, 'r') as config_file:
 		config_inputs = json.load(config_file)
@@ -204,7 +212,7 @@ def main():
 	if args.overlap_reads and args.dada2:
 		ad.flush_dir(res_dir, "DADA2", "QProfile")
 		path_to_meta = os.path.join(res_dir, "PrimerRem", "primrem_meta.tsv")
-		ad.run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch, saveRdata, res_dir, "DADA2")
+		ad.run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch, saveRdata, res_dir, "DADA2", args.terra)
 		cmd = ['cp', os.path.join(res_dir, 'DADA2', 'seqtab.tsv'), 
 			os.path.join(res_dir, '.'), 
 			'\\', 
@@ -221,7 +229,7 @@ def main():
 		ad.flush_dir(res_dir, "DADA2_OP", "QProfile")
 		path_to_meta = os.path.join(res_dir, "PrimerRem", "mixed_op_prim_meta.tsv")
 		justConcatenate=0	
-		ad.run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch,saveRdata, res_dir, "DADA2_OP")
+		ad.run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch,saveRdata, res_dir, "DADA2_OP", args.terra)
 		seqtab_op = os.path.join(res_dir, 'DADA2_OP', 'seqtab.tsv')
 		bimera_op = os.path.join(res_dir, 'DADA2_OP', 'ASVBimeras.txt')
 
@@ -229,7 +237,7 @@ def main():
 		ad.flush_dir(res_dir, "DADA2_NOP", "QProfile")
 		path_to_meta = os.path.join(res_dir, "PrimerRem", "mixed_nop_prim_meta.tsv")
 		justConcatenate=1	
-		ad.run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch,saveRdata, res_dir, "DADA2_NOP")
+		ad.run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch,saveRdata, res_dir, "DADA2_NOP", args.terra)
 		seqtab_nop = os.path.join(res_dir, 'DADA2_NOP', 'seqtab.tsv')
 		bimera_nop = os.path.join(res_dir, 'DADA2_NOP', 'ASVBimeras.txt')
 

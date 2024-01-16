@@ -53,7 +53,6 @@ CONFIG.JSON
 
 #python Code/Amplicon_TerraPipeline.py --config config_MiSeq.json --overlap_reads \
 #--meta \
-#--repo \
 #--adaptor_removal \
 #--merge \
 #--bbmerge_report #\
@@ -65,7 +64,6 @@ CONFIG.JSON
 
 python Code/Amplicon_TerraPipeline.py --config config_iSeq.json --mixed_reads \
 --meta \
---repo \
 --adaptor_removal \
 --primer_removal \
 --dada2 \

@@ -149,7 +149,7 @@ def trim_primer(sampleid, fileF, fileR, res_dir, subdir, pr1, pr2, prefix, keep_
 	return()
 
 #RUN DADA2 SECTION
-def run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch, saveRdata, res_dir, subdir):
+def run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch, saveRdata, res_dir, subdir, terra):
 	"""
 	Runs the DADA2 pipeline on the input files using the specified parameters.
 
@@ -171,6 +171,7 @@ def run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxE
 	justConcatenate (int): whether to just concatenate the forward and reverse reads without merging them.
 	maxMismatch (int): the maximum number of mismatches allowed during merging.
 	saveRdata (str): whether to save the intermediate R data files.
+	terra (bool): boolena to indicate if modified paths to terra must be used.
 
 	Returns:
 	None
@@ -184,6 +185,10 @@ def run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxE
 			program = 'runDADA2contamination.R' 
 
 		bimera = '--bimera'
+		if terra:
+			path_to_program = os.path.join("/", path_to_Code, program)
+			platform = '--terra'
+
 		cmd = ['Rscript', os.path.join("/", path_to_Code, program),
 		'-p', f'{path_to_meta}',
 		'-r', f'{path_to_fq}',
@@ -201,7 +206,11 @@ def run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxE
 		'-jC', f'{justConcatenate}',
 		'-mM', f'{maxMismatch}',
 		'-s', f'{saveRdata}',
-		f'{bimera}']
+		f'{bimera}'] 
+
+		if terra:
+			cmd.append[f'{platform}']
+
 		print(cmd)
 		proc = subprocess.Popen(cmd)
 		proc.wait()

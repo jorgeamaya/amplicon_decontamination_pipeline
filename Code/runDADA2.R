@@ -58,6 +58,7 @@ parser$add_argument("-wA", "--omega_a", type="double", help="P-value threshold i
 parser$add_argument("-jC", "--justConcatenate", type="integer", help="Specify whether ASVs need to be concatenated with Ns instead of merging")
 parser$add_argument("-mM", "--maxMismatch", type="integer", help="Specify the maximum number of mismatches allowed during merging")
 parser$add_argument("--bimera", action='store_true', help="Optionally output list of sequences identified as bimeras")
+parser$add_argument("--terra", action='store_true', help="State whether the scripts are running in Terra")
 args <- parser$parse_args()
 
 #work_dir = '/Users/jorgeamaya/Desktop/amplicon_decontamination_pipeline/Results/DADA2_OP'
@@ -77,6 +78,7 @@ args <- parser$parse_args()
 #justConcatenate <- '0'
 #maxMismatch ='0'
 #bimera = TRUE
+#terra = TRUE 
 #save_run = "dada2.RData"
 
 # Universal parameters
@@ -87,6 +89,7 @@ path_to_flist = args$path_to_flist
 work_dir <- args$dir
 output_filename = args$output_filename
 save_run = args$save_run
+terra = args$terra
 
 # obtain/initialize Parameters
 # (Universal) Parameters
