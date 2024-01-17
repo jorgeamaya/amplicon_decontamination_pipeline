@@ -84,7 +84,7 @@ workflow mixed_reads_ampseq {
 	}
 
 	output {
-		File ASVBimeras_f = mixed_reads_ampseq_process.ASVBimeras
+		File? ASVBimeras_f = mixed_reads_ampseq_process.ASVBimeras
 		File CIGARVariants_Bfilter_f = mixed_reads_ampseq_process.CIGARVariants_Bfilter
 		File ASV_to_CIGAR_f = mixed_reads_ampseq_process.ASV_to_CIGAR
 		File seqtab_f = mixed_reads_ampseq_process.seqtab
@@ -184,7 +184,7 @@ task mixed_reads_ampseq_process {
 	find . -type f
 	>>>
 	output {
-		File ASVBimeras = "Results/ASVBimeras.txt"
+		File? ASVBimeras = "Results/ASVBimeras.txt"
 		File CIGARVariants_Bfilter = "Results/CIGARVariants_Bfilter.out.tsv"
 		File ASV_to_CIGAR = "Results/ASV_to_CIGAR/ASV_to_CIGAR.out.txt"
 		File seqtab = "Results/seqtab.tsv"
