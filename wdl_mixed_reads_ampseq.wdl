@@ -3,6 +3,7 @@ version 1.0
 workflow mixed_reads_ampseq {
 	input {	
 		Boolean CI
+		Boolean AMPSEQ
 
 		#General commands
 		String type_of_reads
@@ -70,7 +71,7 @@ workflow mixed_reads_ampseq {
 		}
 	}
 
-	if (!CI) {
+	if (AMPSEQ) {
 		call mixed_reads_ampseq_process {
 			input:
 				type_of_reads = type_of_reads,
