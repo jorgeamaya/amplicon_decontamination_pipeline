@@ -54,6 +54,23 @@ workflow mixed_reads_ampseq {
 	}
 
 	if (CI) {
+		call inline_barcodes_process {
+			input: 	
+				type_of_reads = type_of_reads,
+				path_to_fq = path_to_fq,
+				path_to_flist = path_to_flist,
+				pattern_fw = pattern_fw,
+				pattern_rv = pattern_rv,
+				read_maxlength = read_maxlength,
+				pairread_minlength = pairread_minlength,
+				merge_minlength = merge_minlength,
+				joined_threshold = joined_threshold,
+				contamination_threshold = contamination_threshold,
+				verbose = verbose
+		}
+	}
+
+	if (!CI) {
 		call mixed_reads_ampseq_process {
 			input:
 				type_of_reads = type_of_reads,
@@ -92,23 +109,6 @@ workflow mixed_reads_ampseq {
 				include_failed = include_failed,
 				exclude_bimeras = exclude_bimeras,
 				amp_mask = amp_mask
-		}
-	}
-
-	if (!CI) {
-		call inline_barcodes_process {
-			input: 	
-				type_of_reads = type_of_reads,
-				path_to_fq = path_to_fq,
-				path_to_flist = path_to_flist,
-				pattern_fw = pattern_fw,
-				pattern_rv = pattern_rv,
-				read_maxlength = read_maxlength,
-				pairread_minlength = pairread_minlength,
-				merge_minlength = merge_minlength,
-				joined_threshold = joined_threshold,
-				contamination_threshold = contamination_threshold,
-				verbose = verbose
 		}
 	}
 }
