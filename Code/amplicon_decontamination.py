@@ -209,7 +209,7 @@ def run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxE
 		f'{bimera}'] 
 
 		if terra:
-			cmd.append[f'{platform}']
+			cmd.append(f'{platform}')
 
 		print(cmd)
 		proc = subprocess.Popen(cmd)
