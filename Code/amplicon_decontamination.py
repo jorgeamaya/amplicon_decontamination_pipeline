@@ -260,3 +260,72 @@ def merge_bimeras(path_op, path_nop):
 		sys.exit('Overlapping and/or non-overlapping dada2 bimera tables not found! Exiting...')
 
 	return(bimeras)
+
+#RUN THE AMPLICON DECONTAMINATION SECTION OF THE PIPELINE
+def mergereads(sampleid, fileF, fileR, res_dir, subdir, read_maxlength=200, pairread_minlength=100, merge_minlength=100):
+	"""
+	This function uses bbmerge.sh to merge paired-end reads from two fastq files
+	(fileF and fileR) into a single fastq file. It also generates two other fastq
+	files of unmerged reads. The output files are saved in the specified res_dir
+	and subdir directory paths. The function also creates a metadata file 
+	(merge_meta.tsv) containing the sample ID, output file name, and standard 
+	output and error logs. If either the forward or reverse fastq files are not 
+	found, the function exits with an error message. This functions is optimized 
+	for reads that are at the least 200bp long and amplicons 100 bp long or longer.
+	Merging shorter reads will require chaning this parameters in the config file.
+	
+	Args:
+	sampleid: a string representing the sample identifier.
+	fileF: a string representing the file path of the forward reads.
+	fileR: a string representing the file path of the reverse reads.
+	res_dir: a string representing the directory path of the results.
+	subdir: a string representing the subdirectory path of the results.
+	read_maxlength: an integer representing the maximum length of the read. Read after this will be trimmed.
+	pairread_minlength: an integer representing the minimum length of the mated reads.
+	merge_minlength: an integer representing the minimum merge length. Merge shorter than this will be discarded.
+
+	Returns: None
+
+	Example usage:
+
+	mergereads("sample1", "/path/to/forward.fastq", "/path/to/reverse.fastq", "/path/to/results", "subdirectory")
+	"""
+
+	if os.path.isfile(fileF) and os.path.isfile(fileR):	
+		file_nameout = os.path.join(res_dir, subdir, f"{sampleid}_stdout.txt")
+		file_nameerr = os.path.join(res_dir, subdir, f"{sampleid}_stderr.txt")
+		output_file_path = os.path.join(res_dir, subdir, f"{sampleid}_merged.fastq")
+		output_unmerged_f_path = os.path.join(res_dir, subdir, f"{sampleid}_unmergedf.fastq")
+		output_unmerged_r_path = os.path.join(res_dir, subdir, f"{sampleid}_unmergedr.fastq")
+		meta_file_path = os.path.join(res_dir, subdir, f"merge_meta.tsv")
+
+		original_stdout = sys.stdout
+		original_stderr = sys.stderr
+
+		sys.stdout = open(file_nameout, "w")
+		sys.stderr = open(file_nameerr, "w")
+
+		with open(meta_file_path, "a") as meta_file:
+			meta_file.write(f"{sampleid}\t{output_file_path}\t{file_nameout}\t{file_nameerr}\n")
+		
+		#The meaning of insert in mininsert is different to the meaning of insert in the cont_report.
+		#mininsert equals the final size of the merged read. That is, fbarcode + insert + rbarcode in cont_report. 	
+		cmd = ['bbmerge.sh', 
+			f'forcetrimright={read_maxlength}', 
+			f'minlength={pairread_minlength}', 
+			f'mininsert={merge_minlength}', 
+			f'in1={fileF}',
+			f'in2={fileR}',
+			f'out={output_file_path}',
+			f'outu1={output_unmerged_f_path}', 
+			f'outu2={output_unmerged_r_path}']
+
+		print(cmd)
+		proc = subprocess.Popen(cmd, stdout=sys.stdout, stderr=sys.stderr)
+		proc.wait()
+
+		sys.stdout = original_stdout
+		sys.stderr = original_stderr
+	else:
+		sys.exit('BBmerge halted : one or both of the fastq files not found! Exiting..')
+	return()
