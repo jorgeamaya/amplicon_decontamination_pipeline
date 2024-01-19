@@ -26,7 +26,6 @@ workflow mixed_reads_ampseq {
 		String saveRdata = ""
 		Int justConcatenate = 0
 		Int maxMismatch = 0
-		String path_to_Code = '/Code'
 		File overlap_pr1
 		File overlap_pr2
 		File path_to_snv
@@ -92,7 +91,6 @@ workflow mixed_reads_ampseq {
 				saveRdata = saveRdata,
 				justConcatenate = justConcatenate,
 				maxMismatch = maxMismatch,
-				path_to_Code = path_to_Code,
 				overlap_pr1 = overlap_pr1,
 				overlap_pr2 = overlap_pr2,
 				path_to_snv = path_to_snv,
@@ -134,7 +132,6 @@ task mixed_reads_ampseq_process {
 		String saveRdata = ""
 		Int justConcatenate = 0
 		Int maxMismatch = 0
-		String path_to_Code = '/Code'
 		File overlap_pr1
 		File overlap_pr2
 		File path_to_snv
@@ -172,7 +169,6 @@ task mixed_reads_ampseq_process {
 		"saveRdata": saveRdata,
 		"justConcatenate": justConcatenate,
 		"maxMismatch": maxMismatch,
-		"path_to_Code": path_to_Code,
 		"overlap_pr1" : sub(overlap_pr1, "gs://", "/cromwell_root/"),
 		"overlap_pr2" : sub(overlap_pr2, "gs://", "/cromwell_root/"),
 		"path_to_snv": sub(path_to_snv, "gs://", "/cromwell_root/"),
