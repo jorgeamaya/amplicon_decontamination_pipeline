@@ -94,8 +94,8 @@ def main():
 		if 'include_failed' in config_inputs.keys(): include_failed = eval(config_inputs['include_failed'])
 		if 'exclude_bimeras' in config_inputs.keys(): exclude_bimeras = eval(config_inputs['exclude_bimeras'])
 		if 'amp_mask' in config_inputs.keys(): amp_mask = config_inputs['amp_mask']
-		#barcodes_file = config_inputs['barcodes_file']
 		if 'verbose' in config_inputs.keys(): verbose = eval(config_inputs['verbose'])
+		#barcodes_file = config_inputs['barcodes_file']
 
 	### PREPARE OUTPUT DIRECTORIES
 
