@@ -51,10 +51,8 @@ def main():
 
 	if args.terra:
 		print("Pipeline is running in Terra. Adjusted paths will be used.")
-		print(args.terra)
 	else:
 		print("Pipeline not running in Terra. Default paths will be used.")
-		print(args.terra)
 				
 	#Configuration aguments will be parsed from config.json
 	with open(args.config, 'r') as config_file:
@@ -79,7 +77,6 @@ def main():
 		if 'saveRdata' in config_inputs.keys(): saveRdata = config_inputs['saveRdata']
 		if 'justConcatenate' in config_inputs.keys(): justConcatenate = config_inputs['justConcatenate']
 		if 'maxMismatch' in config_inputs.keys(): maxMismatch = config_inputs['maxMismatch']
-		if 'path_to_Code' in config_inputs.keys(): path_to_Code = config_inputs['path_to_Code']
 		if 'overlap_pr1' in config_inputs.keys(): overlap_pr1 = config_inputs['overlap_pr1']
 		if 'overlap_pr2' in config_inputs.keys(): overlap_pr2 = config_inputs['overlap_pr2']
 		if 'reference' in config_inputs.keys(): reference = config_inputs['reference']
@@ -122,6 +119,19 @@ def main():
 		ad.flush_dir(res_dir, "Fq_metadata")
 		ad.create_meta(path_to_fq, res_dir, "Fq_metadata", "rawfilelist.tsv", pattern_fw, pattern_rv)
 
+		#List missing file from the complete list of files
+		with open(path_to_flist, 'r') as input_file:
+			next(input_file)
+			samples = [line.split(',')[0] for line in input_file]
+
+		with open('Results/Fq_metadata/rawfilelist.tsv', 'r') as raw_files:
+			raw_file_samples = [line.split('\t')[0] for line in raw_files]
+
+		missing_samples = [sample for sample in samples if sample not in raw_file_samples]
+
+		with open('Results/missing_files.tsv', 'w') as output_file:
+			output_file.write('\n'.join(missing_samples))
+
 	### EXECUTE
 
 	#Remove adaptors
@@ -160,7 +170,7 @@ def main():
 		
 		for sample in samples:
 			slist = sample.split()
-			ad.extract_bbmergefields(slist[0], slist[1], slist[3], res_dir, rep_dir, "Merge")
+			ad.extract_bbmergefields(slist[0], slist[1], slist[3], path_to_flist, res_dir, rep_dir, "Merge", args.terra)
 
 	#Remove primers
 	#For a set where all reads have overlap
@@ -212,7 +222,7 @@ def main():
 	if args.overlap_reads and args.dada2:
 		ad.flush_dir(res_dir, "DADA2", "QProfile")
 		path_to_meta = os.path.join(res_dir, "PrimerRem", "primrem_meta.tsv")
-		ad.run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch, saveRdata, res_dir, "DADA2", args.terra)
+		ad.run_dada2(path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch, saveRdata, res_dir, "DADA2", args.terra)
 		cmd = ['cp', os.path.join(res_dir, 'DADA2', 'seqtab.tsv'), 
 			os.path.join(res_dir, '.'), 
 			'\\', 
@@ -229,7 +239,7 @@ def main():
 		ad.flush_dir(res_dir, "DADA2_OP", "QProfile")
 		path_to_meta = os.path.join(res_dir, "PrimerRem", "mixed_op_prim_meta.tsv")
 		justConcatenate=0	
-		ad.run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch,saveRdata, res_dir, "DADA2_OP", args.terra)
+		ad.run_dada2(path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch,saveRdata, res_dir, "DADA2_OP", args.terra)
 		seqtab_op = os.path.join(res_dir, 'DADA2_OP', 'seqtab.tsv')
 		bimera_op = os.path.join(res_dir, 'DADA2_OP', 'ASVBimeras.txt')
 
@@ -237,13 +247,17 @@ def main():
 		ad.flush_dir(res_dir, "DADA2_NOP", "QProfile")
 		path_to_meta = os.path.join(res_dir, "PrimerRem", "mixed_nop_prim_meta.tsv")
 		justConcatenate=1	
-		ad.run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch,saveRdata, res_dir, "DADA2_NOP", args.terra)
+		ad.run_dada2(path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch,saveRdata, res_dir, "DADA2_NOP", args.terra)
 		seqtab_nop = os.path.join(res_dir, 'DADA2_NOP', 'seqtab.tsv')
 		bimera_nop = os.path.join(res_dir, 'DADA2_NOP', 'ASVBimeras.txt')
 
 		#ASV modification block for non-op targets and merge two ASV tables
 		if reference is not None:
-			adjASV = ['Rscript', os.path.join(path_to_Code, 'adjustASV.R'), '-s', seqtab_nop, '-ref', str(reference),
+			if args.terra:
+				path_to_program = os.path.join("/", "Code/adjustASV.R")
+			else:
+				path_to_program = os.path.join("Code/adjustASV.R")
+			adjASV = ['Rscript', path_to_program, '-s', seqtab_nop, '-ref', str(reference),
 			'-dist', adjust_mode,
 			'-o', os.path.join(res_dir, 'DADA2_NOP', 'correctedASV.txt')]
 			print(adjASV)
@@ -265,7 +279,12 @@ def main():
 		
 		path_to_seqtab = os.path.join(res_dir, 'seqtab.tsv')
 
-		postProc = ['Rscript', os.path.join(path_to_Code, 'postProc_dada2.R'), 
+		if args.terra:
+			path_to_program = os.path.join("/", "Code/postProc_dada2.R")
+		else:
+			path_to_program = os.path.join("Code/postProc_dada2.R")
+
+		postProc = ['Rscript', path_to_program, 
 				'-s', path_to_seqtab, 
 				'-b', os.path.join(res_dir, 'ASVBimeras.txt'),
 				'-snv', os.path.join(path_to_snv),

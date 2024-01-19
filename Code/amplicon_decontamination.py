@@ -149,12 +149,11 @@ def trim_primer(sampleid, fileF, fileR, res_dir, subdir, pr1, pr2, prefix, keep_
 	return()
 
 #RUN DADA2 SECTION
-def run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch, saveRdata, res_dir, subdir, terra):
+def run_dada2(path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch, saveRdata, res_dir, subdir, terra):
 	"""
 	Runs the DADA2 pipeline on the input files using the specified parameters.
 
 	Args:
-	path_to_Code (str): the path to the DADA2 installation directory.
 	path_to_meta (str): the path to the metadata file containing sample information.
 	path_to_fq (str): the path to the raw fastq.gz files.
 	path_to_flist (str): the path to a csv file with the sample_id,Forward,Reverse, where Forward and Reverse are columns with the barcodes for the sample
@@ -171,7 +170,7 @@ def run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxE
 	justConcatenate (int): whether to just concatenate the forward and reverse reads without merging them.
 	maxMismatch (int): the maximum number of mismatches allowed during merging.
 	saveRdata (str): whether to save the intermediate R data files.
-	terra (bool): boolena to indicate if modified paths to terra must be used.
+	terra (bool): boolean to indicate if modified paths to terra must be used.
 
 	Returns:
 	None
@@ -186,10 +185,12 @@ def run_dada2(path_to_Code, path_to_meta, path_to_fq, path_to_flist, Class, maxE
 
 		bimera = '--bimera'
 		if terra:
-			path_to_program = os.path.join("/", path_to_Code, program)
+			path_to_program = os.path.join("/", "Code/", program)
 			platform = '--terra'
+		else:	
+			path_to_program = os.path.join("Code/", program)
 
-		cmd = ['Rscript', os.path.join("/", path_to_Code, program),
+		cmd = ['Rscript', path_to_program,
 		'-p', f'{path_to_meta}',
 		'-r', f'{path_to_fq}',
 		'-l', f'{path_to_flist}',
@@ -328,4 +329,89 @@ def mergereads(sampleid, fileF, fileR, res_dir, subdir, read_maxlength=200, pair
 		sys.stderr = original_stderr
 	else:
 		sys.exit('BBmerge halted : one or both of the fastq files not found! Exiting..')
+	return()
+
+def extract_bbmergefields(sampleid, mergefile, bbreportfile, path_to_flist, res_dir, rep_dir, subdir, terra):
+	"""
+	Extracts relevant data from a bbmerge report file and saves it to a tab-separated file.
+
+	Args:
+	sampleid: the ID of the sample being processed
+	mergefile: the path to the file with the merged reads
+	bbreportfile: the path to the bbmerge report file
+	path_to_flist: the path to a csv file with the sample_id,Forward,Reverse, where Forward and Reverse are columns with the barcodes for the sample
+	res_dir: the path to the main results directory
+	rep_dir: the path to the reports directory within the results directory
+	subdir: the name of the subdirectory within the results directory where output files should be written
+	terra: boolean to indicate if modified paths to terra must be used.
+
+	Returns:
+	None
+
+	Example Usage:
+
+	extract_bbmergefields("Sample1", "/path/to/bbmerge.fastq", "/path/to/bbmerge_report.txt", "path/to/barcodes_match.csv", "/path/to/results", "/path/to/reports", "bbmerge", terra)
+	"""
+
+	if os.path.isfile(bbreportfile) and os.path.isfile(mergefile):				
+		bbmergedata = {}
+		bbmergedata['sampleid'] = sampleid
+
+		with open(bbreportfile, 'r') as f, open(os.path.join(rep_dir, subdir, "bbmergefields.tsv"), 'a') as o:
+			for line in f:
+				fields = line.split()
+				if not fields:	#Skip empty lines
+					continue	
+				if fields[0] == 'Pairs:':
+					bbmergedata['Pairs'] = fields[1]
+				elif fields[0] == 'Joined:':
+					bbmergedata['Joined'] = fields[1]
+					bbmergedata['JoinedP'] = fields[2].strip('%')
+				elif fields[0] == 'Ambiguous:':
+					bbmergedata['Ambiguous'] = fields[1]
+					bbmergedata['AmbiguousP'] = fields[2].strip('%') 
+				elif fields[0] == 'No':
+					bbmergedata['No_Solution'] = fields[2]
+					bbmergedata['No_SolutionP'] = fields[3].strip('%') 
+				elif fields[0] == 'Too':
+					bbmergedata['Too_Short'] = fields[2]
+					bbmergedata['Too_ShortP'] = fields[3].strip('%') 
+				elif fields[0] == 'Avg':
+					bbmergedata['Avg_Insert'] = fields[2]
+				elif fields[0] == 'Standard':
+					bbmergedata['Standard_Deviation'] = fields[2]
+				elif fields[0] == 'Mode:':
+					bbmergedata['Mode'] = fields[1]
+				elif fields[0] == 'Insert':
+					bbmergedata['Insert_range_low'] = fields[2]
+					bbmergedata['Insert_range_up'] = fields[4]
+				elif fields[0] == '90th':
+					bbmergedata['90th_pc'] = fields[2]
+				elif fields[0] == '75th':
+					bbmergedata['75th'] = fields[2]
+				elif fields[0] == '50th':
+					bbmergedata['50th_pc'] = fields[2]
+				elif fields[0] == '25th':
+					bbmergedata['25th_pc'] = fields[2]
+				elif fields[0] == '10th':
+					bbmergedata['10th_pc'] = fields[2]
+
+			o.write('\t'.join(bbmergedata.values()) + '\n')
+
+		if terra:
+			platform = '--terra'
+
+		cmd = ['Rscript', os.path.join('Code/runBBMergecontamination.R'),
+		'-p', f'{mergefile}',
+		'-d', os.path.join(rep_dir, subdir),
+		'-b', path_to_flist]
+
+		if terra:
+			cmd.append(f'{platform}')
+
+		print(cmd)
+		proc = subprocess.Popen(cmd)
+		proc.wait()
+	else:
+		sys.exit('Extract bbmerge report halted : bbmerge report file not found! Exiting..')
 	return()

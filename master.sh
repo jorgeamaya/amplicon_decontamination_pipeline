@@ -70,11 +70,12 @@ CONFIG.JSON
 #--postproc_dada2 \
 #--asv_to_cigar
 
-python Code/Amplicon_TerraPipeline.py --config config_MiSeq_ci.json --overlap_reads \
+python Code/Amplicon_TerraPipeline.py --config config_MiSeq_ci.json --overlap_reads --bbmerge_report \
 --meta \
 --repo \
 --adaptor_removal \
---bbmerge 
+--bbmerge \
+--bbmerge_report
 
 #if [ -d "$PWD/Report/Merge/" ]; then
 	#These plots are optimized for datasets up to 100 specimens. This is by design as a standard illumina plate has 96 wells. Larger dataset will still produce the plots, but some column names will be missing. Names longer than 60 characters will extend outside the plotting area.
