@@ -110,6 +110,15 @@ workflow mixed_reads_ampseq {
 				amp_mask = amp_mask
 		}
 	}
+
+	output {
+		File? ASVBimeras_f = mixed_reads_ampseq_process.ASVBimeras
+		File? CIGARVariants_Bfilter_f = mixed_reads_ampseq_process.CIGARVariants_Bfilter
+		File? ASV_to_CIGAR_f = mixed_reads_ampseq_process.ASV_to_CIGAR
+		File? seqtab_f = mixed_reads_ampseq_process.seqtab
+		File? ASVTable_f = mixed_reads_ampseq_process.ASVTable
+		File? ASVSeqs_f = mixed_reads_ampseq_process.ASVSeqs
+	}
 }
 
 task mixed_reads_ampseq_process {
@@ -202,11 +211,11 @@ task mixed_reads_ampseq_process {
 	>>>
 	output {
 		File? ASVBimeras = "Results/ASVBimeras.txt"
-		File CIGARVariants_Bfilter = "Results/CIGARVariants_Bfilter.out.tsv"
-		File ASV_to_CIGAR = "Results/ASV_to_CIGAR/ASV_to_CIGAR.out.txt"
-		File seqtab = "Results/seqtab.tsv"
-		File ASVTable = "Results/PostProc_DADA2/ASVTable.txt"
-		File ASVSeqs = "Results/PostProc_DADA2/ASVSeqs.fasta"
+		File? CIGARVariants_Bfilter = "Results/CIGARVariants_Bfilter.out.tsv"
+		File? ASV_to_CIGAR = "Results/ASV_to_CIGAR/ASV_to_CIGAR.out.txt"
+		File? seqtab = "Results/seqtab.tsv"
+		File? ASVTable = "Results/PostProc_DADA2/ASVTable.txt"
+		File? ASVSeqs = "Results/PostProc_DADA2/ASVSeqs.fasta"
 	}
 	runtime {
 		cpu: 1

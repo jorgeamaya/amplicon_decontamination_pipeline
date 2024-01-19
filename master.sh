@@ -51,7 +51,15 @@ CONFIG.JSON
 
 #conda activate ampseq_env
 
-python Code/Amplicon_TerraPipeline.py --config config_iSeq.json --mixed_reads \
+#python Code/Amplicon_TerraPipeline.py --config config_iSeq.json --mixed_reads \
+#--meta \
+#--adaptor_removal \
+#--primer_removal \
+#--dada2 \
+#--postproc_dada2 \
+#--asv_to_cigar
+
+python Code/Amplicon_TerraPipeline.py --config config_MiSeq.json --overlap_reads \
 --meta \
 --adaptor_removal \
 --primer_removal \
@@ -59,23 +67,14 @@ python Code/Amplicon_TerraPipeline.py --config config_iSeq.json --mixed_reads \
 --postproc_dada2 \
 --asv_to_cigar
 
-#python Code/Amplicon_TerraPipeline.py --config config_MiSeq.json --overlap_reads \
-#--meta \
-#--adaptor_removal \
-#--merge \
-#--bbmerge_report #\
-#--primer_removal \
-#--dada2 \
-#--dada2_contamination #\
-#--postproc_dada2 \
-#--asv_to_cigar
-
 #python Code/Amplicon_TerraPipeline.py --config config_MiSeq_ci.json --overlap_reads --bbmerge_report \
 #--meta \
 #--repo \
 #--adaptor_removal \
 #--bbmerge \
 #--bbmerge_report
+#--primer_removal \
+#--dada2_contamination #\
 
 #if [ -d "$PWD/Report/Merge/" ]; then
 	#These plots are optimized for datasets up to 100 specimens. This is by design as a standard illumina plate has 96 wells. Larger dataset will still produce the plots, but some column names will be missing. Names longer than 60 characters will extend outside the plotting area.
