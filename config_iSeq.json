@@ -7,7 +7,6 @@
 	"read_maxlength": 200,
 	"pairread_minlength": 100,
 	"merge_minlength": 100,
-	"barcodes_file": "/Users/jorgeamaya/Desktop/Terra_Development/amplicon_decontamination_pipeline/Data/barcodes.fasta",
 	"pr1": "/Users/jorgeamaya/Desktop/Terra_Development/amplicon_decontamination_pipeline/Data/primers_no_overlap_fw.fasta",
 	"pr2": "/Users/jorgeamaya/Desktop/Terra_Development/amplicon_decontamination_pipeline/Data/primers_no_overlap_rv.fasta",
 	"Class": "parasite",

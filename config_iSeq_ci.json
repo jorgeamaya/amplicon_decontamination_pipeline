@@ -1,7 +1,7 @@
 {
 	"##_COMMENT_##": "INPUTS",
-	"path_to_fq": "/Users/jorgeamaya/Desktop/Broad_Test/Benchmarking/Data_Repo_Colombia/Second_plate",
-	"path_to_flist": "/Users/jorgeamaya/Desktop/Terra_Development/amplicon_decontamination_pipeline/Data/experiments_colombia2.csv",
+	"path_to_fq": "/Users/jorgeamaya/Desktop/Broad_Test/Benchmarking/iSeq_ci_Benchmarking",
+	"path_to_flist": "/Users/jorgeamaya/Desktop/Terra_Development/amplicon_decontamination_pipeline/Data/barcodes_matches_iseq_benchmarking.csv",
 	"pattern_fw": "*_L001_R1_001.fastq.gz",
 	"pattern_rv": "*_L001_R2_001.fastq.gz",
 	"read_maxlength": 200,
@@ -20,6 +20,7 @@
 	"saveRdata":"",
 	"justConcatenate": 0,
 	"maxMismatch" : 0,
+	"path_to_Code": "/Users/jorgeamaya/Desktop/Terra_Development/amplicon_decontamination_pipeline/Code",
 	"overlap_pr1": "/Users/jorgeamaya/Desktop/Terra_Development/amplicon_decontamination_pipeline/Data/primers_overlap_fw.fasta",
 	"overlap_pr2": "/Users/jorgeamaya/Desktop/Terra_Development/amplicon_decontamination_pipeline/Data/primers_overlap_rv.fasta",
 	"reference": "/Users/jorgeamaya/Desktop/Terra_Development/amplicon_decontamination_pipeline/Data/pf3d7_ref_updated_v4.fasta",

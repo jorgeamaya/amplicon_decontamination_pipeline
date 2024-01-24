@@ -18,7 +18,6 @@
 #read_maxlength: Crop reads at this length. Use to avoid merging bad quality reads.
 #pairread_minlength: Minimum paired read length. Use to remove unusual sequence pairs. Amplicons must be longer than this.
 #merge_minlength: Minimum merge length. Use to remove unusual sequence pairs. Amplicons must be longer than this. Must be equal or shorter than pairread_minlength.
-#barcodes_file: Fasta file with barcodes
 #pr1: Path to forward primers FASTA file
 #pr2: Path to reverse primers FASTA file
 #Class: Specify Analysis class. Accepts one of two: parasite/vector
@@ -51,6 +50,7 @@ CONFIG.JSON
 
 #conda activate ampseq_env
 
+#Tested
 #python Code/Amplicon_TerraPipeline.py --config config_iSeq.json --mixed_reads \
 #--meta \
 #--adaptor_removal \
@@ -59,22 +59,32 @@ CONFIG.JSON
 #--postproc_dada2 \
 #--asv_to_cigar
 
-python Code/Amplicon_TerraPipeline.py --config config_MiSeq.json --overlap_reads \
---meta \
---adaptor_removal \
---primer_removal \
---dada2 \
---postproc_dada2 \
---asv_to_cigar
+#Tested
+#python Code/Amplicon_TerraPipeline.py --config config_MiSeq.json --overlap_reads \
+#--meta \
+#--adaptor_removal \
+#--primer_removal \
+#--dada2 \
+#--postproc_dada2 \
+#--asv_to_cigar
 
-#python Code/Amplicon_TerraPipeline.py --config config_MiSeq_ci.json --overlap_reads --bbmerge_report \
+#Tested
+#python Code/Amplicon_TerraPipeline.py --config config_MiSeq_ci.json --overlap_reads \
 #--meta \
 #--repo \
 #--adaptor_removal \
 #--bbmerge \
-#--bbmerge_report
+#--bbmerge_report \
 #--primer_removal \
-#--dada2_contamination #\
+#--dada2_contamination
+
+
+#Tested
+#python Code/Amplicon_TerraPipeline.py --config config_iSeq_ci.json --mixed_reads \
+#--meta \
+#--repo \
+#--adaptor_removal \
+#--dada2_contamination 
 
 #if [ -d "$PWD/Report/Merge/" ]; then
 	#These plots are optimized for datasets up to 100 specimens. This is by design as a standard illumina plate has 96 wells. Larger dataset will still produce the plots, but some column names will be missing. Names longer than 60 characters will extend outside the plotting area.

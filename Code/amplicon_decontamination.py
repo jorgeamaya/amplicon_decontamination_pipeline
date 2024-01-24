@@ -129,8 +129,8 @@ def trim_primer(sampleid, fileF, fileR, res_dir, subdir, pr1, pr2, prefix, keep_
 	if os.path.isfile(fileF) and os.path.isfile(fileR):
 
 		cmd = ['cutadapt', '-g', f'file:{pr1}', '-G', f'file:{pr2}',
-			'-o', os.path.join(res_dir, "PrimerRem", f'{sampleid}_{prefix}_1.fq.gz'),
-			'-p', os.path.join(res_dir, "PrimerRem", f'{sampleid}_{prefix}_2.fq.gz'),
+			'-o', os.path.join(res_dir, subdir, f'{sampleid}_{prefix}_1.fq.gz'),
+			'-p', os.path.join(res_dir, subdir, f'{sampleid}_{prefix}_2.fq.gz'),
 			'--pair-adapters', '--action=trim']
 
 		if keep_untrimmed:
@@ -140,7 +140,7 @@ def trim_primer(sampleid, fileF, fileR, res_dir, subdir, pr1, pr2, prefix, keep_
 			cmd.append('--discard-untrimmed')
 
 		cmd.extend([fileF, fileR])
-
+		print(cmd)
 		proc = subprocess.Popen(cmd)
 		proc.wait()
 
@@ -193,7 +193,7 @@ def run_dada2(path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, 
 		cmd = ['Rscript', path_to_program,
 		'-p', f'{path_to_meta}',
 		'-r', f'{path_to_fq}',
-		'-l', f'{path_to_flist}',
+		'-b', f'{path_to_flist}',
 		'-d', os.path.join(res_dir, subdir),
 		'-o', os.path.join(res_dir, subdir, 'seqtab.tsv'),
 		'-c', f'{Class}',

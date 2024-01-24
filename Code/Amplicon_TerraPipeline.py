@@ -36,7 +36,7 @@ def main():
 	parser.add_argument('--adaptor_removal', action="store_true", help="Specify if adaptor removal needed.")
 	parser.add_argument('--primer_removal', action="store_true", help="Specify if primer removal needed.")
 	parser.add_argument('--dada2', action="store_true", help="Specifiy if standard preprocess merge with DADA2 is performed.")
-	#parser.add_argument('--dada2_contamination', action="store_true", help="Specifiy if contamination detection is performed with DADA2. Unlike in the standard DADA2 preproprocess, dada2_contamination merges the reads after adaptor removal, not after primer removal. Primer removal will cut the barcodes, making it impossible to perform the matching procedure for contamination detection.")
+	parser.add_argument('--dada2_contamination', action="store_true", help="Specifiy if contamination detection is performed with DADA2. Unlike in the standard DADA2 preproprocess, dada2_contamination merges the reads after adaptor removal, not after primer removal. Primer removal will cut the barcodes, making it impossible to perform the matching procedure for contamination detection.")
 	parser.add_argument('--postproc_dada2', action="store_true", help="Specifiy if postProcess of DADA2 results is perfomed.")
 	parser.add_argument('--asv_to_cigar', action="store_true", help="Specifiy if the ASV to CIGAR transformation is perfomed.")
 
@@ -95,7 +95,6 @@ def main():
 		if 'exclude_bimeras' in config_inputs.keys(): exclude_bimeras = eval(config_inputs['exclude_bimeras'])
 		if 'amp_mask' in config_inputs.keys(): amp_mask = config_inputs['amp_mask']
 		if 'verbose' in config_inputs.keys(): verbose = eval(config_inputs['verbose'])
-		#barcodes_file = config_inputs['barcodes_file']
 
 	### PREPARE OUTPUT DIRECTORIES
 
@@ -370,6 +369,70 @@ def main():
 		print(f"INFO: Converting DADA2 seqtab file {path_to_seqtab} to {path_to_out}")
 		if ac.convert_seqtab(path_to_seqtab, cigars, path_to_out):
 			print("INFO: Completed successfully!")
+
+	#Perform DADA2 merging for contamination detection for overlapping reads
+	if args.dada2_contamination and args.overlap_reads:	
+		ad.flush_dir(res_dir, "DADA2_Contamination")
+		ad.flush_dir(rep_dir, "DADA2_Contamination")
+
+		path_to_meta = os.path.join(res_dir, "AdaptorRem", "adaptorrem_meta.tsv")		
+		ad.run_dada2(path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch, saveRdata, res_dir, "DADA2_Contamination", args.terra)
+
+	#Perform DADA2 merging for contamination detection for mix of overlapping and non-overlapping reads
+	if args.dada2_contamination and args.mixed_reads:
+		ad.flush_dir(res_dir, "PrimerRem_OP")	
+		ad.flush_dir(res_dir, "PrimerRem_NOP")
+		ad.flush_dir(rep_dir, "DADA2_Contamination")
+		meta = open(os.path.join(res_dir, "AdaptorRem", "adaptorrem_meta.tsv"), 'r')
+		samples = meta.readlines()
+
+		#Use the trim functions to separate files, but do not trim the primer and barcode
+		for sample in samples:
+			slist = sample.split()
+			ad.trim_primer(slist[0], slist[1], slist[2], res_dir, "PrimerRem_OP", pr1, pr2, "mixed_op", True)
+
+		#Metafile for un-trimmed op target reads
+		ad.create_meta(os.path.join(res_dir, "PrimerRem_OP"), res_dir, "PrimerRem_OP", "mixed_op_prim_meta.tsv",
+			pattern_fw="*_temp_1.fq.gz", pattern_rv="*_temp_2.fq.gz")
+
+		#Trim primers off Non Overlapping short targets and demux them to different file
+		for sample in samples:
+			slist = sample.split()
+			ad.trim_primer(slist[0], slist[1], slist[2], res_dir, "PrimerRem_NOP", overlap_pr1, overlap_pr2, "mixed_nop", True)
+
+		#Metafile for un-trimmed nop target reads
+		ad.create_meta(os.path.join(res_dir, "PrimerRem_NOP"), res_dir, "PrimerRem_NOP", "mixed_nop_prim_meta.tsv",
+			pattern_fw="*_temp_1.fq.gz", pattern_rv="*_temp_2.fq.gz")
+
+		#Perform DADA2 merging for contamination detection on iseq runs 
+		justConcatenate=1	
+		ad.flush_dir(res_dir, "DADA2_NOP_Contamination")
+		path_to_meta = os.path.join(res_dir, "PrimerRem_NOP", "mixed_nop_prim_meta.tsv")			
+		ad.run_dada2(path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch, saveRdata, res_dir, "DADA2_NOP_Contamination", args.terra)
+
+		seqtab_op = os.path.join(res_dir,'DADA2_NOP_Contamination','seqtab.tsv')
+
+		justConcatenate=0	
+		ad.flush_dir(res_dir, "DADA2_OP_Contamination")
+		path_to_meta = os.path.join(res_dir, "PrimerRem_OP", "mixed_op_prim_meta.tsv")			
+		ad.run_dada2(path_to_meta, path_to_fq, path_to_flist, Class, maxEE, trimRight, minLen, truncQ, matchIDs, max_consist, omegaA, justConcatenate, maxMismatch, saveRdata, res_dir, "DADA2_OP_Contamination", args.terra)
+
+		seqtab_nop = os.path.join(res_dir,'DADA2_OP_Contamination','seqtab.tsv')
+
+		#Merge two ASV tables
+		#ASV modification is impossible due to the presence of barcodes, which cannot be aligned to the reference genome.
+		seqtab = ad.merge_seqtab(seqtab_op, seqtab_nop)
+		seqtab.to_csv(os.path.join(res_dir, 'seqtab_mixed_contamination.tsv'), sep = "\t")
+
+		cmd = ['mkdir', os.path.join(res_dir, 'DADA2_Contamination')] 
+		print(cmd)
+		proccp = subprocess.Popen(cmd)
+		proccp.wait()
+
+		cmd = ['cp', os.path.join(res_dir, 'seqtab_mixed_contamination.tsv'), os.path.join(res_dir, 'DADA2_Contamination/seqtab.tsv')] 
+		print(cmd)
+		proccp = subprocess.Popen(cmd)
+		proccp.wait()
 
 if __name__ == "__main__":
 	main()

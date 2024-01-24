@@ -118,6 +118,10 @@ workflow mixed_reads_ampseq {
 		File? seqtab_f = mixed_reads_ampseq_process.seqtab
 		File? ASVTable_f = mixed_reads_ampseq_process.ASVTable
 		File? ASVSeqs_f = mixed_reads_ampseq_process.ASVSeqs
+		File? rawfilelist_f = inline_barcodes_process.rawfilelist
+		File? missing_files_f = inline_barcodes_process.missing_files
+		File? merge_tar_f = inline_barcodes_process.merge_tar
+		File? dada2_ci_tar_f = inline_barcodes_process.dada2_ci_tar
 	}
 }
 
@@ -264,18 +268,26 @@ task inline_barcodes_process {
 	gsutil ls ~{path_to_fq}
 	gsutil -m cp -r ~{path_to_fq}* fq_dir/
 
-	python /Code/Amplicon_TerraPipeline.py --config ~{config_json} --~{type_of_reads} --terra --meta --repo --adaptor_removal --merge --bbmerge_report
-	#Rscript /Code/BBMerge.R Report/Merge/ Report/
+	if [ "~{type_of_reads}" == "overlap_reads" ]; then
 
-	ls Report/Merge/
-	#Rscript /Code/Contamination.R Report/Merge/ Report/ ~{path_to_flist} ~{joined_threshold} ~{contamination_threshold}
-	tar -czvf Merge.tar.gz Results/Merge
-	find . -type f
+		python /Code/Amplicon_TerraPipeline.py --config ~{config_json} --~{type_of_reads} --terra --meta --repo --adaptor_removal --bbmerge --bbmerge_report
+		#Rscript /Code/BBMerge.R Report/Merge/ Report/
+
+		ls Report/Merge/
+		#Rscript /Code/Contamination.R Report/Merge/ Report/ ~{path_to_flist} ~{joined_threshold} ~{contamination_threshold}
+		tar -czvf Merge.tar.gz Results/Merge
+		find . -type f
+	
+	else
+		python Code/Amplicon_TerraPipeline.py --config config_iSeq_ci.json --~{type_of_reads} --meta --repo --adaptor_removal --dada2_contamination
+		tar -cvzf DADA2_Contamination.tar.gz Report/DADA2_Contamination 
+	fi
 	>>>
 	output {
-		File rawfilelist = "Results/Fq_metadata/rawfilelist.tsv"
-		File missing_files = "Results/missing_files.tsv" 
-		File merge_tar = "Merge.tar.gz"
+		File? rawfilelist = "Results/Fq_metadata/rawfilelist.tsv"
+		File? missing_files = "Results/missing_files.tsv" 
+		File? merge_tar = "Merge.tar.gz"
+		File? dada2_ci_tar = "DADA2_Contamination.tar.gz"
 		#File bbmergefields = "Report/Merge/bbmergefields.tsv"
 		#File BBmerge_performance_absolute_report = "Report/BBmerge_performance_absolute_report.svg"
 		#File BBmerge_performance_percentage_report = "Report/BBmerge_performance_percentage_report.svg"
