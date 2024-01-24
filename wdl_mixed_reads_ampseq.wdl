@@ -61,15 +61,26 @@ workflow mixed_reads_ampseq {
 				path_to_flist = path_to_flist,
 				pattern_fw = pattern_fw,
 				pattern_rv = pattern_rv,
+				pr1 = pr1,
+				pr2 = pr2,
+				Class = Class,
+				maxEE = maxEE,
+				trimRight = trimRight,
+				minLen = minLen,
+				truncQ = truncQ,
+				matchIDs = matchIDs,
+				max_consist = max_consist,
+				omegaA = omegaA,
+				saveRdata = saveRdata,
+				justConcatenate = justConcatenate,
+				maxMismatch = maxMismatch,
+				overlap_pr1 = overlap_pr1,
+				overlap_pr2 = overlap_pr2,
 				read_maxlength = read_maxlength,
 				pairread_minlength = pairread_minlength,
 				merge_minlength = merge_minlength,
 				joined_threshold = joined_threshold,
 				contamination_threshold = contamination_threshold,
-				pr1 = pr1,
-				pr2 = pr2,
-				overlap_pr1 = overlap_pr1,
-				overlap_pr2 = overlap_pr2,
 				verbose = verbose
 		}
 	}
@@ -175,17 +186,17 @@ task mixed_reads_ampseq_process {
 		"pattern_rv": pattern_rv,
 		"pr1": sub(pr1, "gs://", "/cromwell_root/"),
 		"pr2": sub(pr2, "gs://", "/cromwell_root/"),
-		"Class": Class,
-		"maxEE": maxEE,
-		"trimRight": trimRight,
-		"minLen": minLen,
-		"truncQ": truncQ,
-		"matchIDs": matchIDs,
+		"class": class,
+		"maxee": maxee,
+		"trimright": trimright,
+		"minlen": minlen,
+		"truncq": truncq,
+		"matchids": matchids,
 		"max_consist": max_consist,
-		"omegaA": omegaA,
-		"saveRdata": saveRdata,
-		"justConcatenate": justConcatenate,
-		"maxMismatch": maxMismatch,
+		"omegaa": omegaa,
+		"saverdata": saverdata,
+		"justconcatenate": justconcatenate,
+		"maxmismatch": maxmismatch,
 		"overlap_pr1" : sub(overlap_pr1, "gs://", "/cromwell_root/"),
 		"overlap_pr2" : sub(overlap_pr2, "gs://", "/cromwell_root/"),
 		"path_to_snv": sub(path_to_snv, "gs://", "/cromwell_root/"),
@@ -243,16 +254,27 @@ task inline_barcodes_process {
 		File path_to_flist
 		String pattern_fw = "*_L001_R1_001.fastq.gz"
 		String pattern_rv = "*_L001_R2_001.fastq.gz"
+		File pr1
+		File pr2
+		String Class = "parasite"
+		String maxEE = "5,5"
+		String trimRight = "0,0"
+		Int minLen = 30
+		String truncQ = "5,5"
+		String matchIDs = "0"
+		Int max_consist = 10
+		Float omegaA = 0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001
+		String saveRdata = ""
+		Int justConcatenate = 0
+		Int maxMismatch = 0
+		File overlap_pr1
+		File overlap_pr2
 		Int read_maxlength = 200
 		Int pairread_minlength = 100
 		Int merge_minlength = 100
 		Int joined_threshold = 1000
 		Float contamination_threshold = 0.5
 		String verbose = "False"
-		File pr1
-		File pr2
-		File overlap_pr1
-		File overlap_pr2
 	}
 
 	Map[String, String] in_map = {
@@ -260,15 +282,26 @@ task inline_barcodes_process {
 		"path_to_flist": sub(path_to_flist, "gs://", "/cromwell_root/"),
 		"pattern_fw": pattern_fw,
 		"pattern_rv": pattern_rv,
+		"pr1": sub(pr1, "gs://", "/cromwell_root/"),
+		"pr2": sub(pr2, "gs://", "/cromwell_root/"),
+		"class": class,
+		"maxee": maxee,
+		"trimright": trimright,
+		"minlen": minlen,
+		"truncq": truncq,
+		"matchids": matchids,
+		"max_consist": max_consist,
+		"omegaa": omegaa,
+		"saverdata": saverdata,
+		"justconcatenate": justconcatenate,
+		"maxmismatch": maxmismatch,
+		"overlap_pr1" : sub(overlap_pr1, "gs://", "/cromwell_root/"),
+		"overlap_pr2" : sub(overlap_pr2, "gs://", "/cromwell_root/"),
 		"read_maxlength": read_maxlength,
 		"pairread_minlength": pairread_minlength,
 		"merge_minlength": merge_minlength,
 		"joined_threshold": joined_threshold,
 		"contamination_threshold": contamination_threshold,
-		"pr1": sub(pr1, "gs://", "/cromwell_root/"),
-		"pr2": sub(pr2, "gs://", "/cromwell_root/"),
-		"overlap_pr1" : sub(overlap_pr1, "gs://", "/cromwell_root/"),
-		"overlap_pr2" : sub(overlap_pr2, "gs://", "/cromwell_root/"),
 		"verbose": verbose
 	}
 	File config_json = write_json(in_map)
