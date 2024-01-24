@@ -276,11 +276,12 @@ task inline_barcodes_process {
 		ls Report/Merge/
 		#Rscript /Code/Contamination.R Report/Merge/ Report/ ~{path_to_flist} ~{joined_threshold} ~{contamination_threshold}
 		tar -czvf Merge.tar.gz Results/Merge
-		find . -type f
-	
+		find . -type f	
 	else
-		python Code/Amplicon_TerraPipeline.py --config config_iSeq_ci.json --~{type_of_reads} --meta --repo --adaptor_removal --dada2_contamination
+		python /Code/Amplicon_TerraPipeline.py --config ~{config_json} --~{type_of_reads} --terra --meta --repo --adaptor_removal --dada2_contamination
+		ls Report/DADA2_Contamination
 		tar -cvzf DADA2_Contamination.tar.gz Report/DADA2_Contamination 
+		find . -type f
 	fi
 	>>>
 	output {
