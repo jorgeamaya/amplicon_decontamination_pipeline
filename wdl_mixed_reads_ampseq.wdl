@@ -13,8 +13,8 @@ workflow mixed_reads_ampseq {
 		String pattern_rv = "*_L001_R2_001.fastq.gz"
 
 		#Commands for AmpSeq
-		File? pr1
-		File? pr2
+		File pr1
+		File pr2
 		String Class = "parasite"
 		String maxEE = "5,5"
 		String trimRight = "0,0"
@@ -26,13 +26,13 @@ workflow mixed_reads_ampseq {
 		String saveRdata = ""
 		Int justConcatenate = 0
 		Int maxMismatch = 0
-		File? overlap_pr1
-		File? overlap_pr2
+		File overlap_pr1
+		File overlap_pr2
 		File path_to_snv
 		String no_ref = 'False'
 		File reference
 		String adjust_mode = "absolute"
-		File? reference2
+		File reference2
 		String strain = "3D7"
 		String strain2 = "DD2"
 		String polyN = "5"
