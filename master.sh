@@ -78,7 +78,6 @@ CONFIG.JSON
 #--primer_removal \
 #--dada2_contamination
 
-
 #Tested
 #python Code/Amplicon_TerraPipeline.py --config config_iSeq_ci.json --mixed_reads \
 #--meta \
@@ -92,6 +91,6 @@ CONFIG.JSON
 #	Rscript Code/Contamination.R "$PWD/Report/Merge/" "$PWD/Report/" "$PWD/Data/"
 #fi
 
-#if [ -d "$PWD/Report/DADA2_Contamination/" ]; then
-#	Rscript Code/Contamination.R "$PWD/Report/DADA2_Contamination/" "$PWD/Report/" "$PWD/Data/"
-#fi
+if [ -d "$PWD/Report/DADA2_Contamination/" ]; then
+	Rscript Code/Contamination.R "$PWD/Report/DADA2_Contamination/" "$PWD/Report/" "$PWD/Data/" 1000 0.5
+fi

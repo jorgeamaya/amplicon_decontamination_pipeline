@@ -13,8 +13,8 @@ workflow mixed_reads_ampseq {
 		String pattern_rv = "*_L001_R2_001.fastq.gz"
 
 		#Commands for AmpSeq
-		File pr1
-		File pr2
+		File? pr1
+		File? pr2
 		String Class = "parasite"
 		String maxEE = "5,5"
 		String trimRight = "0,0"
@@ -26,13 +26,13 @@ workflow mixed_reads_ampseq {
 		String saveRdata = ""
 		Int justConcatenate = 0
 		Int maxMismatch = 0
-		File overlap_pr1
-		File overlap_pr2
+		File? overlap_pr1
+		File? overlap_pr2
 		File path_to_snv
 		String no_ref = 'False'
 		File reference
 		String adjust_mode = "absolute"
-		File reference2
+		File? reference2
 		String strain = "3D7"
 		String strain2 = "DD2"
 		String polyN = "5"
@@ -66,6 +66,10 @@ workflow mixed_reads_ampseq {
 				merge_minlength = merge_minlength,
 				joined_threshold = joined_threshold,
 				contamination_threshold = contamination_threshold,
+				pr1 = pr1,
+				pr2 = pr2,
+				overlap_pr1 = overlap_pr1,
+				overlap_pr2 = overlap_pr2,
 				verbose = verbose
 		}
 	}
@@ -245,6 +249,10 @@ task inline_barcodes_process {
 		Int joined_threshold = 1000
 		Float contamination_threshold = 0.5
 		String verbose = "False"
+		File pr1
+		File pr2
+		File overlap_pr1
+		File overlap_pr2
 	}
 
 	Map[String, String] in_map = {
@@ -257,6 +265,10 @@ task inline_barcodes_process {
 		"merge_minlength": merge_minlength,
 		"joined_threshold": joined_threshold,
 		"contamination_threshold": contamination_threshold,
+		"pr1": sub(pr1, "gs://", "/cromwell_root/"),
+		"pr2": sub(pr2, "gs://", "/cromwell_root/"),
+		"overlap_pr1" : sub(overlap_pr1, "gs://", "/cromwell_root/"),
+		"overlap_pr2" : sub(overlap_pr2, "gs://", "/cromwell_root/"),
 		"verbose": verbose
 	}
 	File config_json = write_json(in_map)
