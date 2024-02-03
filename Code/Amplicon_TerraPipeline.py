@@ -421,18 +421,18 @@ def main():
 
 		#Merge two ASV tables
 		#ASV modification is impossible due to the presence of barcodes, which cannot be aligned to the reference genome.
-#		seqtab = ad.merge_seqtab(seqtab_op, seqtab_nop)
-#		seqtab.to_csv(os.path.join(res_dir, 'seqtab_mixed_contamination.tsv'), sep = "\t")
+		seqtab = ad.merge_seqtab(seqtab_op, seqtab_nop)
+		seqtab.to_csv(os.path.join(res_dir, 'seqtab_mixed_contamination.tsv'), sep = "\t")
 
-#		cmd = ['mkdir', os.path.join(res_dir, 'DADA2_Contamination')] 
-#		print(cmd)
-#		proccp = subprocess.Popen(cmd)
-#		proccp.wait()
+		cmd = ['mkdir', os.path.join(res_dir, 'DADA2_Contamination')] 
+		print(cmd)
+		proccp = subprocess.Popen(cmd)
+		proccp.wait()
 
-#		cmd = ['cp', os.path.join(res_dir, 'seqtab_mixed_contamination.tsv'), os.path.join(res_dir, 'DADA2_Contamination/seqtab.tsv')] 
-#		print(cmd)
-#		proccp = subprocess.Popen(cmd)
-#		proccp.wait()
+		cmd = ['cp', os.path.join(res_dir, 'seqtab_mixed_contamination.tsv'), os.path.join(res_dir, 'DADA2_Contamination/seqtab.tsv')] 
+		print(cmd)
+		proccp = subprocess.Popen(cmd)
+		proccp.wait()
 
 if __name__ == "__main__":
 	main()

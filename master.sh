@@ -79,11 +79,11 @@ CONFIG.JSON
 #--dada2_contamination
 
 #Tested
-#python Code/Amplicon_TerraPipeline.py --config config_iSeq_ci.json --mixed_reads \
-#--meta \
-#--repo \
-#--adaptor_removal \
-#--dada2_contamination 
+python Code/Amplicon_TerraPipeline.py --config config_iSeq_ci.json --mixed_reads \
+--meta \
+--repo \
+--adaptor_removal \
+--dada2_contamination 
 
 #if [ -d "$PWD/Report/Merge/" ]; then
 	#These plots are optimized for datasets up to 100 specimens. This is by design as a standard illumina plate has 96 wells. Larger dataset will still produce the plots, but some column names will be missing. Names longer than 60 characters will extend outside the plotting area.
@@ -91,6 +91,6 @@ CONFIG.JSON
 #	Rscript Code/Contamination.R "$PWD/Report/Merge/" "$PWD/Report/" "$PWD/Data/"
 #fi
 
-if [ -d "$PWD/Report/DADA2_Contamination/" ]; then
-	Rscript Code/Contamination.R "$PWD/Report/DADA2_Contamination/" "$PWD/Report/" "$PWD/Data/" 1000 0.5
-fi
+#if [ -d "$PWD/Report/DADA2_Contamination/" ]; then
+#	Rscript Code/Contamination.R "$PWD/Report/DADA2_Contamination/" "$PWD/Report/" "$PWD/Data/" 1000 0.5
+#fi

@@ -78,6 +78,7 @@ work_dir <- args$dir
 path_to_flist <- args$path_to_flist
 output_filename = args$output_filename
 save_run = args$save_run
+terra = args$terra
 
 # obtain/initialize Parameters
 # (Universal) Parameters
@@ -283,7 +284,12 @@ mergers <- mergePairs(dadaFs, derepFs, dadaRs, derepRs, verbose=TRUE, justConcat
 #             BARCODE REPORT           #
 ########################################
 
-source(paste0(file.path(dirname(dirname(work_dir)), "Code", "matching_functions.R")))
+if (terra) { 
+	source(file.path("/Code", "matching_functions.R"))
+} else {
+	source(file.path("Code", "matching_functions.R"))
+}
+#source(paste0(file.path(dirname(dirname(work_dir)), "Code", "matching_functions.R")))
 barcodes = read.csv(path_to_flist, sep = ",", header = TRUE)
 dist = 2
 
